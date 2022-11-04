@@ -1,7 +1,7 @@
-const { application } = require("express");
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
+const { Product } = require("../models/Product");
 
 const { auth } = require("../middleware/auth");
 
@@ -38,6 +38,17 @@ router.post("/image", (req, res) => {
             filePath: res.req.file.path,
             fileName: res.req.file.filename,
         });
+    });
+});
+
+router.post("/", (req, res) => {
+    console.log(" In server, router post");
+    //받아온 정보들을 DB에 넣어준다.
+    const product = new Product(req.body);
+    console.log(product);
+    product.save((err) => {
+        if (err) return res.status(400).json({ success: false, err });
+        return res.status(200).json({ success: true });
     });
 });
 
