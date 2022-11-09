@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FaCode } from "react-icons/fa";
 import axios from "axios";
-import { Icon, Col, Card, Row } from "antd";
+import { Icon, Col, Card, Row, Carousel } from "antd";
 import Meta from "antd/lib/card/Meta";
+import ImageSlider from "../../utils/ImageSlider";
+
 function LandingPage() {
     const [Products, setProducts] = useState([]);
 
@@ -26,7 +28,9 @@ function LandingPage() {
             // lg, md, xs... etc 이런것들은 사이즈가 얼마만해졌는지에 따라서
             // 하나의 col 이 가지는 면적을 나타낸다.
             <Col lg={6} md={8} xs={24} key={index}>
-                <Card cover={<img src={`http://localhost:5000/${product.images[0]}`} />}>
+                {/* <Card cover={<img src={`http://localhost:5000/${product.images[0]}`} />}> */}
+                {/* https://ant.design/components/carousel 이용해서 슬라이드 만들기 */}
+                <Card cover={<ImageSlider images={product.images} />}>
                     <Meta title={product.title} description={`$${product.price}`} />
                 </Card>
             </Col>
