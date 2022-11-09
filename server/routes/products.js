@@ -52,13 +52,20 @@ router.post("/", (req, res) => {
 
 //import all goods from product collection
 router.post("/products", (req, res) => {
+    let limit = req.body.limit ? parseInt(req.body.limit) : 20;
+    let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+
     //몽고디비 Product 컬렉션에 있는 모든 item들을 가져온다.
     Product.find()
         //populate을 쓰면 wirter에 대한 정보도 같이 끌어온다.
         .populate("writer")
+        .skip(skip)
+        .limit(limit)
         .exec((err, productInfo) => {
             if (err) return res.status(400).json({ success: false, err });
-            return res.status(200).json({ success: true, productInfo });
+            return res
+                .status(200)
+                .json({ success: true, productInfo, PostSize: productInfo.length });
         });
 });
 
