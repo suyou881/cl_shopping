@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form, Input } from "antd";
 import FileUpLoad from "../../utils/FileUpload";
-import Axios from "axios";
+import axios from "axios";
 const { TextArea } = Input;
 
 const Continents = [
@@ -27,6 +27,7 @@ function UploadProductPage(props) {
 
     const discriptionChangeHandler = (e) => {
         setDescription(e.currentTarget.value);
+        console.log(Description);
     };
 
     const priceChangeHandler = (e) => {
@@ -69,7 +70,7 @@ function UploadProductPage(props) {
             contients: Continent,
         };
 
-        Axios.post("/api/products", body).then((response) => {
+        axios.post("/api/products", body).then((response) => {
             if (response.data.success) {
                 alert("상품 업로드에 성공 했습니다");
                 //상품 업로드가 성공이 되면 push(~~) 주소로 이동.

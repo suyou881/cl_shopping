@@ -24,7 +24,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single("file");
 
 router.post("/image", (req, res) => {
-    console.log("in products.js from FileUpload");
     //가져온 이미지를 저장해주면 된다.
     //multer를 사용한다.
     upload(req, res, (err) => {
@@ -42,7 +41,6 @@ router.post("/image", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-    console.log(" In server, router post");
     //받아온 정보들을 DB에 넣어준다.
     const product = new Product(req.body);
     console.log(product);
@@ -50,6 +48,18 @@ router.post("/", (req, res) => {
         if (err) return res.status(400).json({ success: false, err });
         return res.status(200).json({ success: true });
     });
+});
+
+//import all goods from product collection
+router.post("/products", (req, res) => {
+    //몽고디비 Product 컬렉션에 있는 모든 item들을 가져온다.
+    Product.find()
+        //populate을 쓰면 wirter에 대한 정보도 같이 끌어온다.
+        .populate("writer")
+        .exec((err, productInfo) => {
+            if (err) return res.status(400).json({ success: false, err });
+            return res.status(200).json({ success: true, productInfo });
+        });
 });
 
 module.exports = router;
