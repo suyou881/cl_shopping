@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FaCode } from "react-icons/fa";
 import axios from "axios";
-import { Icon, Col, Card, Row, Carousel } from "antd";
+import { Icon, Col, Card, Row, Carousel, Checkbox } from "antd";
 import Meta from "antd/lib/card/Meta";
 import ImageSlider from "../../utils/ImageSlider";
+import CheckBox from "./Sections/CheckBox";
+import { continents } from "./Sections/Datas";
 
 function LandingPage() {
     const [Products, setProducts] = useState([]);
@@ -11,6 +13,10 @@ function LandingPage() {
     const [Skip, setSkip] = useState(0);
     const [Limit, setLimit] = useState(8);
     const [PostSize, setPostSize] = useState(0);
+    const [Filters, setFilters] = useState({
+        continents: [],
+        price: [],
+    });
 
     useEffect(() => {
         //limit과 skip을 이용해서 처음 LandingPage에 들어왔을 때,
@@ -86,6 +92,29 @@ function LandingPage() {
         );
     });
 
+    const showFilterdResult = (newFilters) => {
+        let body = {
+            skip: 0,
+            limit: Limit,
+            loadMore: false,
+            filters: newFilters,
+        };
+        getProducts(body);
+        setSkip(0);
+    };
+
+    //filter는 체크된 것들의 id를 담은 array
+    //category는 checkbox인지 radiobox인지를 알려주는
+    const handleFilters = (filters, category) => {
+        const newFilters = { ...Filters };
+        //categoryd에는 continent와 price가 있다.
+        //newFilters[category] --> newFilters[continent] or newFilters[price]가 되고
+        //filter로 넘어온 id값들을 해당 카테고리에 맞게 넣는 작업.
+        newFilters[category] = filters;
+
+        showFilterdResult(newFilters);
+    };
+
     return (
         <div style={{ width: "75%", margin: "3rem auto" }}>
             <div style={{ textAlign: "center" }}>
@@ -94,6 +123,14 @@ function LandingPage() {
                 </h2>
             </div>
             {/* Filter */}
+            {/* CheckBox */}
+            <CheckBox
+                list={continents}
+                handleFilters={(filters) => {
+                    handleFilters(filters, "continents");
+                }}
+            />
+            {/* RadioBox */}
 
             {/* Search */}
 

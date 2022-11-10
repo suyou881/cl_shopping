@@ -55,8 +55,18 @@ router.post("/products", (req, res) => {
     let limit = req.body.limit ? parseInt(req.body.limit) : 20;
     let skip = req.body.skip ? parseInt(req.body.skip) : 0;
 
+    let findArgs = {};
+    //여기서 key는 continent or price가 된다.
+    for (let key in req.body.filters) {
+        if (req.body.filters[key].length > 0) {
+            findArgs[key] = req.body.filters[key];
+        }
+    }
+
+    console.log("findArgs", findArgs);
+
     //몽고디비 Product 컬렉션에 있는 모든 item들을 가져온다.
-    Product.find()
+    Product.find(findArgs)
         //populate을 쓰면 wirter에 대한 정보도 같이 끌어온다.
         .populate("writer")
         .skip(skip)
