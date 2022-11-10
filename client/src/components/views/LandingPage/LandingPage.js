@@ -5,7 +5,9 @@ import { Icon, Col, Card, Row, Carousel, Checkbox } from "antd";
 import Meta from "antd/lib/card/Meta";
 import ImageSlider from "../../utils/ImageSlider";
 import CheckBox from "./Sections/CheckBox";
-import { continents } from "./Sections/Datas";
+import { continents, price } from "./Sections/Datas";
+import RadioBox from "./Sections/RadioBox";
+import { array } from "yup";
 
 function LandingPage() {
     const [Products, setProducts] = useState([]);
@@ -103,6 +105,17 @@ function LandingPage() {
         setSkip(0);
     };
 
+    const handlePrice = (value) => {
+        const data = price;
+        let arr = [];
+        for (let key in data) {
+            if (data[key].id === parseInt(value, 10)) {
+                arr = data[key].array;
+            }
+        }
+        return arr;
+    };
+
     //filter는 체크된 것들의 id를 담은 array
     //category는 checkbox인지 radiobox인지를 알려주는
     const handleFilters = (filters, category) => {
@@ -112,7 +125,18 @@ function LandingPage() {
         //filter로 넘어온 id값들을 해당 카테고리에 맞게 넣는 작업.
         newFilters[category] = filters;
 
+        //category가 price일 때는 추가 작업을 해줘야 한다.
+        //console.log(category);
+        //console.log(filters);
+        // console.log(newFilters);
+        if (category === "price") {
+            let papriceValues = handlePrice(filters);
+
+            newFilters[category] = papriceValues;
+        }
+        // console.log(newFilters["price"]);
         showFilterdResult(newFilters);
+        setFilters(newFilters);
     };
 
     return (
@@ -122,15 +146,26 @@ function LandingPage() {
                     Let's Travel Anywhere <Icon type="rocket" />
                 </h2>
             </div>
-            {/* Filter */}
-            {/* CheckBox */}
-            <CheckBox
-                list={continents}
-                handleFilters={(filters) => {
-                    handleFilters(filters, "continents");
-                }}
-            />
-            {/* RadioBox */}
+            {/*------------------- Filter -------------------*/}
+            <Row gutter={[16, 16]}>
+                <Col lg={12} xs={24}>
+                    {/* CheckBox */}
+                    <CheckBox
+                        list={continents}
+                        handleFilters={(filters) => {
+                            handleFilters(filters, "continents");
+                        }}
+                    />
+                </Col>
+                <Col lg={12} xs={24}>
+                    {/* RadioBox */}
+                    <RadioBox
+                        list={price}
+                        handleFilters={(filters) => {
+                            handleFilters(filters, "price");
+                        }}></RadioBox>
+                </Col>
+            </Row>
 
             {/* Search */}
 

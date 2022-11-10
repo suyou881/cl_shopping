@@ -33,16 +33,14 @@ function CheckBox({ list, handleFilters }) {
                     onChange={() => handleToggle(continent.id)}
                     checked={Checked.indexOf(continent.id) === -1 ? false : true}
                 />
-                <span>{continent.name}</span>
+                <span style={{ marginRight: "15px" }}>{continent.name}</span>
             </Fragment>
         ));
 
     return (
         <div>
             <Collapse>
-                <Panel header="This is panel header 1" key="1">
-                    {renderCheckBoxLists()}
-                </Panel>
+                <Panel header="Continents">{renderCheckBoxLists()}</Panel>
             </Collapse>
         </div>
     );
