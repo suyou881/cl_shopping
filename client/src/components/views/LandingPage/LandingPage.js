@@ -7,7 +7,7 @@ import ImageSlider from "../../utils/ImageSlider";
 import CheckBox from "./Sections/CheckBox";
 import { continents, price } from "./Sections/Datas";
 import RadioBox from "./Sections/RadioBox";
-import { array } from "yup";
+import SearchFeature from "./Sections/SearchFeature";
 
 function LandingPage() {
     const [Products, setProducts] = useState([]);
@@ -19,6 +19,8 @@ function LandingPage() {
         continents: [],
         price: [],
     });
+
+    const [SearchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         //limit과 skip을 이용해서 처음 LandingPage에 들어왔을 때,
@@ -100,6 +102,7 @@ function LandingPage() {
             limit: Limit,
             loadMore: false,
             filters: newFilters,
+            searchTerm: SearchTerm,
         };
         getProducts(body);
         setSkip(0);
@@ -135,8 +138,23 @@ function LandingPage() {
             newFilters[category] = papriceValues;
         }
         // console.log(newFilters["price"]);
+        const existSearchTerm = SearchTerm;
         showFilterdResult(newFilters);
         setFilters(newFilters);
+        setSearchTerm(existSearchTerm);
+    };
+
+    const updateSearchTerm = (newSearchTerm) => {
+        let body = {
+            skip: 0,
+            limit: Limit,
+            filters: Filters,
+            searchTerm: newSearchTerm,
+        };
+
+        setSkip(0);
+        getProducts(body);
+        setSearchTerm(newSearchTerm);
     };
 
     return (
@@ -168,7 +186,9 @@ function LandingPage() {
             </Row>
 
             {/* Search */}
-
+            <div style={{ display: "flex", justifyContent: "flex-end", margin: "1rem auto" }}>
+                <SearchFeature refreshFunction={updateSearchTerm} />
+            </div>
             {/* Cards */}
             {/* https://ant.design/components/grid/ */}
             <Row gutter={[16, 16]}>{renderCards}</Row>
