@@ -39,7 +39,7 @@ function CheckBox({ list, handleFilters }) {
 
     return (
         <div>
-            <Collapse>
+            <Collapse defaultActiveKey={0}>
                 <Panel header="Continents">{renderCheckBoxLists()}</Panel>
             </Collapse>
         </div>

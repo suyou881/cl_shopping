@@ -76,8 +76,8 @@ router.post("/products", (req, res) => {
         }
     }
 
-    console.log("findArgs", findArgs);
-    if (term) console.log("term", term);
+    // console.log("findArgs", findArgs);
+    // if (term) console.log("term", term);
     //term = term + "*";
 
     if (term) {
@@ -110,4 +110,16 @@ router.post("/products", (req, res) => {
     }
 });
 
+router.get("/products_by_id", (req, res) => {
+    //prodcutId를 이용해서 DB에서 productId와 같은 상품의 정보를 가져온다.
+    let type = req.query.type;
+    let productId = req.query.id;
+    Product.find({ _id: productId })
+        .populate("writer")
+        .exec((err, product) => {
+            if (err) return res.status(400).send(err);
+            return res.status(200).send({ success: true, product });
+        });
+});
+// axios.get(`api/products/products_by_id?id=${productId}&type=single`)
 module.exports = router;

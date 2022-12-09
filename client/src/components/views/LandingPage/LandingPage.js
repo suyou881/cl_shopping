@@ -89,7 +89,12 @@ function LandingPage() {
             <Col lg={6} md={8} xs={24} key={index}>
                 {/* <Card cover={<img src={`http://localhost:5000/${product.images[0]}`} />}> */}
                 {/* https://ant.design/components/carousel 이용해서 슬라이드 만들기 */}
-                <Card cover={<ImageSlider images={product.images} />}>
+                <Card
+                    cover={
+                        <a href={`/product/${product._id}`}>
+                            <ImageSlider images={product.images} />
+                        </a>
+                    }>
                     <Meta title={product.title} description={`$${product.price}`} />
                 </Card>
             </Col>
