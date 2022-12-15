@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { User } = require("../models/User");
-
 const { auth } = require("../middleware/auth");
-const { Date } = require("mongoose");
 
 //=================================
 //             User
@@ -56,51 +54,53 @@ router.post("/login", (req, res) => {
     });
 });
 
-router.get("/addToCart", auth, (req, res) => {
+router.post("/addToCart", auth, (req, res) => {
     //해당 유저의 정보를 가져오기.
+    //req.user._id를 할 수 있는 이유는 auth 미들웨어 때문이다.
+    //쿠키에 담겨있는 user 정보를 req.user에 담아주기 때문이다.
+    User.findOne({ _id: req.user._id }, (err, userInfo) => {
+        //그 다음 가져온 정보에서 카트에 넣으려하는 상품이 들어있는지 확인
+        let duplicate = false;
+        userInfo.cart.forEach((item) => {
+            if (item.id === req.body.productId) {
+                duplicate = true;
+            }
+        });
 
-    User.findOne({ _id: req.user._id }),
-        (err, userInfo) => {
-            //그 다음 가져온 정보에서 카트에 넣으려하는 상품이 들어있는지 확인
-            let duplicate = false;
-            userInfo.cart.forEach((item) => {
-                if (item.id === req.body.productId) {
-                    duplicate = true;
+        //상품이 이미 있을 때
+
+        if (duplicate) {
+            User.findOneAndUpdate(
+                { _id: req.user._id, "cart.id": req.body.productId },
+                { $inc: { "cart.$.quantity": 1 } },
+                { new: true },
+                //update된 정보의 결과값을 받으려면 new: true 옵션이 필요하다.
+                (err, userInfo) => {
+                    if (err) return res.status(400).json({ success: false, err });
+                    res.status(200).send(userInfo.cart);
                 }
-            });
-            //상품이 이미 있을 때
-            if (duplicate) {
-                User.findAndUpdate(
-                    { _id: req.user._id, "cart.id": req.body.productId },
-                    { $inc: { "cart.$.quantity": 1 } },
-                    { new: true },
-                    //update된 정보의 결과값을 받으려면 new: true 옵션이 필요하다.
-                    (err, userInfo) => {
-                        if (err) return res.status(400).json({ success: false, err });
-                        res.status(200).send(userInfo.cart);
-                    }
-                );
-                //상품이 이미 있지 않을 때
-            } else {
-                User.findOneAndUpdate(
-                    { _id: req.user._id },
-                    {
-                        $push: {
-                            cart: {
-                                id: req.body.productId,
-                                quantity: 1,
-                                date: Date.now(),
-                            },
+            );
+            //상품이 이미 있지 않을 때
+        } else {
+            User.findOneAndUpdate(
+                { _id: req.user._id },
+                {
+                    $push: {
+                        cart: {
+                            id: req.body.productId,
+                            quantity: 1,
+                            date: Date.now(),
                         },
                     },
-                    { new: true },
-                    (err, userInfo) => {
-                        if (err) return res.status(400).json({ success: false, err });
-                        res.status(200).send(userInfo.cart);
-                    }
-                );
-            }
-        };
+                },
+                { new: true },
+                (err, userInfo) => {
+                    if (err) return res.status(400).json({ success: false, err });
+                    res.status(200).send(userInfo.cart);
+                }
+            );
+        }
+    });
 });
 
 module.exports = router;
