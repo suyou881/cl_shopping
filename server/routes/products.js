@@ -111,14 +111,24 @@ router.post("/products", (req, res) => {
 });
 
 router.get("/products_by_id", (req, res) => {
-    //prodcutId를 이용해서 DB에서 productId와 같은 상품의 정보를 가져온다.
     let type = req.query.type;
-    let productId = req.query.id;
-    Product.find({ _id: productId })
+    let productIds = req.query.id;
+
+    if (type === "array") {
+        // id=123141,12421314,12412312 이렇게 넘어온 파라미터를
+        // --> productsIds=[`123141`,`12421314`,`12412312`] 이런식으로 바꿔주기
+        let ids = req.query.id.split(",");
+        productIds = ids.map((item) => {
+            return item;
+        });
+    }
+    //prodcutId를 이용해서 DB에서 productId와 같은 상품의 정보를 가져온다.
+    //$in 문법
+    Product.find({ _id: { $in: productIds } })
         .populate("writer")
         .exec((err, product) => {
-            if (err) return res.status(400).send(err);
-            return res.status(200).send({ success: true, product });
+            if (err) return res.status(400).json(err);
+            return res.status(200).json({ success: true, product });
         });
 });
 // axios.get(`api/products/products_by_id?id=${productId}&type=single`)

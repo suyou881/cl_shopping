@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
-import { Menu } from "antd";
+import { Menu, Icon, Badge } from "antd";
 import axios from "axios";
 import { USER_SERVER } from "../../../Config";
 import { withRouter } from "react-router-dom";
@@ -18,7 +18,7 @@ function RightMenu(props) {
             }
         });
     };
-
+    //console.log(user.userData);
     if (user.userData && !user.userData.isAuth) {
         return (
             <Menu mode={props.mode}>
@@ -35,6 +35,18 @@ function RightMenu(props) {
             <Menu mode={props.mode}>
                 <Menu.Item key="app">
                     <a href="/product/upload">upload</a>
+                </Menu.Item>
+                <Menu.Item key="cart">
+                    <Badge count={4} style={{ paddingBottom: 3 }}>
+                        <a
+                            href="/user/cart"
+                            className="haed-example"
+                            style={{ marginRight: -22, color: "#667777" }}>
+                            <Icon
+                                type="shopping-cart"
+                                style={{ fontSize: 30, marginBottom: 3 }}></Icon>
+                        </a>
+                    </Badge>
                 </Menu.Item>
                 <Menu.Item key="logout">
                     <a onClick={logoutHandler}>Logout</a>
