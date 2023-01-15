@@ -9,12 +9,12 @@ function DetailProductPage(props) {
     const [Product, setProduct] = useState({});
 
     useEffect(() => {
-        axios.get(`/api/products/products_by_id?id=${productId}&type=single`).then((response) => {
-            if (response.data.success) {
-                console.log("response.data", response.data);
-                setProduct(response.data.product[0]);
-            } else alert("상세 정보를 가져오는데 실패했습니다.");
-        });
+        axios
+            .get(`/api/products/products_by_id?id=${productId}&type=single`)
+            .then((response) => {
+                setProduct(response.data[0]);
+            })
+            .catch((err) => alert(err));
     }, []);
 
     return (

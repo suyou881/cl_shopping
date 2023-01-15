@@ -1,7 +1,7 @@
 import React from "react";
 import "./UserCardBlock.css";
 
-function UserCardBlock({ products }) {
+function UserCardBlock({ products, removeItem }) {
     return (
         <div>
             <div>
@@ -14,18 +14,18 @@ function UserCardBlock({ products }) {
                             <th>Remove from Cart</th>
                         </tr>
                     </thead>
-                    <tbody>{renderItems(products)}</tbody>
+                    <tbody>{renderItems(products, removeItem)}</tbody>
                 </table>
             </div>
         </div>
     );
 }
 
-const renderItems = (products) =>
+const renderItems = (products, removeItem) =>
     // console.log(products);
     products &&
-    products.map((product) => (
-        <tr>
+    products.map((product, index) => (
+        <tr key={index}>
             <td>
                 <img
                     style={{ width: "70px" }}
@@ -36,7 +36,7 @@ const renderItems = (products) =>
             <td>{product.quantity} EA</td>
             <td>$ {product.price}</td>
             <td>
-                <button>Remove</button>
+                <button onClick={() => removeItem(product._id)}>Remov e</button>
             </td>
         </tr>
     ));
