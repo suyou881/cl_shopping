@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getCartItems, removeCartItem } from "../../../_actions/user_actions";
 import UserCardBlock from "./Sections/UserCardBlock";
+import ProductInfo from "./../DetailProductPage/Sections/ProductInfo";
+import { Empty } from "antd";
 function CartPage({ user }) {
     const dispatch = useDispatch();
 
-    const [ToTal, setToTal] = useState(0);
+    const [Total, setTotal] = useState(0);
+
+    const [ShowTotal, setShowTotal] = useState(false);
 
     useEffect(() => {
         let cartItems = [];
@@ -19,6 +23,7 @@ function CartPage({ user }) {
                 //원래는 axios를 사용했겠지만, 지금은 redux
                 dispatch(getCartItems(cartItems, user.userData.cart)).then((response) => {
                     calculateTotal(response.payload);
+                    setShowTotal(true);
                 });
             }
         }
@@ -31,11 +36,17 @@ function CartPage({ user }) {
             total += parseInt(item.price, 10) * item.quantity;
         });
 
-        setToTal(total);
+        setTotal(total);
     };
 
     let removeFromCart = (productId) => {
-        dispatch(removeCartItem(productId)).then((reponse) => {});
+        dispatch(removeCartItem(productId)).then((response) => {
+            //console.log(response);
+
+            if (response.payload.productInfo.length <= 0) {
+                setShowTotal(false);
+            }
+        });
     };
 
     return (
@@ -48,9 +59,13 @@ function CartPage({ user }) {
                 <UserCardBlock products={user.cartDetail} removeItem={removeFromCart} />
             </div>
 
-            <div style={{ marginTop: "3rem" }}>
-                <h2>Total Amount: ${ToTal}</h2>
-            </div>
+            {ShowTotal ? (
+                <div style={{ marginTop: "3rem" }}>
+                    <h2>Total Amount: ${Total}</h2>
+                </div>
+            ) : (
+                <Empty description={false} />
+            )}
         </div>
     );
 }
