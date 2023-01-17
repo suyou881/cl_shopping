@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getCartItems, removeCartItem } from "../../../_actions/user_actions";
 import UserCardBlock from "./Sections/UserCardBlock";
-import ProductInfo from "./../DetailProductPage/Sections/ProductInfo";
 import { Empty } from "antd";
+import Paypal from "../../utils/Paypal";
 function CartPage({ user }) {
     const dispatch = useDispatch();
 
@@ -66,6 +66,7 @@ function CartPage({ user }) {
             ) : (
                 <Empty description={false} />
             )}
+            <Paypal total={Total} />
         </div>
     );
 }
